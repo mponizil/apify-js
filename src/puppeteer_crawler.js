@@ -217,6 +217,7 @@ class PuppeteerCrawler {
 
             // PuppeteerPool options
             // TODO: We should put these into a single object, similarly to autoscaledPoolOptions
+            puppeteerPool,
             maxOpenPagesPerInstance,
             retireInstanceAfterRequestCount,
             instanceKillerIntervalMillis,
@@ -246,7 +247,7 @@ class PuppeteerCrawler {
             launchPuppeteerOptions,
         };
 
-        this.puppeteerPool = null; // Constructed when .run()
+        this.puppeteerPool = puppeteerPool;
 
         this.basicCrawler = new BasicCrawler({
             // Basic crawler options.
@@ -272,7 +273,7 @@ class PuppeteerCrawler {
     async run() {
         if (this.isRunning) return this.isRunningPromise;
 
-        this.puppeteerPool = new PuppeteerPool(this.puppeteerPoolOptions);
+        this.puppeteerPool = this.puppeteerPool || new PuppeteerPool(this.puppeteerPoolOptions);
         this.isRunning = true;
         this.rejectOnAbortPromise = new Promise((r, reject) => { this.rejectOnAbort = reject; });
         try {
